@@ -1,0 +1,140 @@
+lsmod | grep -i hardlinkingmod
+
+insmod hardlinkingmod.ko
+rmmod hardlinkingmod.ko
+dmesg | tail -5
+
+ls -lai /root/d1
+ls -lai /root/d2
+
+echo "hello world v1" > /root/d1/f1
+cat /root/d2/f1
+
+# cat /dev/null > PATH
+
+/lib/modules/`uname -r`/build
+
+/usr/src/linux-hwe-5.13-headers-5.13.0-41/fs
+
+
+
+
+lsmod | grep -i hardlinkingmod
+ls /dev/ioctl_hardlinking_dev
+
+insmod hardlinkingmod.ko
+mknod /dev/ioctl_hardlinking_dev c 42 1
+./user/hardlinking_user /root/td1 /root/td2
+dmesg | tail -5
+ls -lai /root/td1
+ls -lai /root/td2
+
+rm -rf /dev/ioctl_hardlinking_dev
+rmmod hardlinkingmod.ko
+
+./user/hardlinking_user /root/td1 /root/td2 # 0
+./user/hardlinking_user /root/td2 # 0
+
+./user/hardlinking_user /root/td1 /root/td2 # 255
+./user/hardlinking_user /root/td2 # 255
+
+
+./user/hardlinking_user /root/td1 /root/td2 
+echo $?
+dmesg | tail -5
+./user/hardlinking_user /root/td2
+echo $?
+
+su john
+./user/hardlinking_user /home/john/j1 /home/john/j2
+echo $?
+dmesg | tail -5
+./user/hardlinking_user /home/john/j2
+echo $?
+
+su john
+./user/hardlinking_user /root/td1 /root/td2
+echo $?
+dmesg | tail -5
+
+
+./user/hardlinking_user /root/td2 /home/john/jj1
+/root/projects/tests/hardlinking_mod
+
+root@john:/home/john/jj1# ls -lai
+total 8
+1966137 drwxr-xr-x  3 root root 4096 Nov 12 18:44 .
+3151229 drwxr-xr-x 21 john john 4096 Nov 12 18:43 ..
+1966406 -rw-r--r--  1 root root    0 Nov 12 18:44 a1
+
+
+root@john:~/td2# ls -lai
+total 8
+1966137 drwxr-xr-x  3 root root 4096 Nov 12 18:44 .
+1966081 drwx------ 14 root root 4096 Nov 12 18:42 ..
+1966406 -rw-r--r--  1 root root    0 Nov 12 18:44 a1
+
+
+ls -lai /home/john/jj1
+ls -lai /root/td2
+
+touch /root/a1
+./user/hardlinking_user /root/td1 /home/john/td2
+touch /root/td2/aa1
+rm -rf /root/td2
+touch /root/a3
+
+
+
+
+
+mkdir /root/td1
+./user/hardlinking_user /root/td1 /home/john/td2
+mkdir /home/john/td2/td2_1
+./user/hardlinking_user /home/john/td2/td2_1 /root/td2_2
+
+touch /root/a1
+
+rm -rf /home/john/td2/td2_1
+./user/hardlinking_user /root/td2_2
+./user/hardlinking_user /home/john/td2
+rm -rf /root/td1
+
+touch /root/a2
+
+
+
+
+
+rm -rf /root/td1
+./user/hardlinking_user /home/john/td2
+
+./user/hardlinking_user /root/td2_2 /home/john/td3
+
+./user/hardlinking_user /root/td1 /root/td2
+./user/hardlinking_user /root/td2
+
+
+
+insmod hardlinkingmod.ko
+mknod /dev/ioctl_hardlinking_dev c 42 1
+
+
+echo "hello world a1 with t1" > /home/john/a1
+
+
+mkdir -p /home/john/.tag/this/t1
+mkdir -p /home/.tag/contain/t1
+mkdir -p /.tag/contain/t1
+
+ln /home/john/a1 /home/john/.tag/this/t1/a1
+./user/hardlinking_user /home/john /home/.tag/contain/t1/john
+./user/hardlinking_user /home /.tag/contain/t1/home
+
+echo "bla bla" > /root/a2
+
+mkdir -p /root/.tag/this/t1
+
+ln /root/a2 /root/.tag/this/t1/a2
+./user/hardlinking_user /.tag/contain/t1
+
